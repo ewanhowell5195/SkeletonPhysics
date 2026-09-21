@@ -69,15 +69,15 @@
       "per": "part",
       "when": "posed",
       "assign": {
-        "var.position_check_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({bone}.rx + var.velocity_angle_{part}) * var.deltatime",
-        "var.position_check_{part}_z": "{offsetz}var.position_{part}_z + var.velocity_{part}_tyz * cos({bone}.rx + var.velocity_angle_{part}) * var.deltatime"
+        "var.position_check_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({tilt} + var.velocity_angle_{part}) * var.deltatime",
+        "var.position_check_{part}_z": "{offsetz}var.position_{part}_z + var.velocity_{part}_tyz * cos({tilt} + var.velocity_angle_{part}) * var.deltatime"
       },
       "needs": "collide"
     },
     {
       "per": "part",
       "posed": {
-        "var.floor_{part}": "if(is_in_water || sqrt(var.position_check_{part}_y * var.position_check_{part}_y + var.position_check_{part}_z * var.position_check_{part}_z) * sin(-{bone}.rx + atan2(var.position_check_{part}_y, var.position_check_{part}_z)) <= {base} - var.{source}_ty + {coef} * sin({bone}.rx + pi / 2) + var.snap, 1, var.contact)"
+        "var.floor_{part}": "if(is_in_water || sqrt(var.position_check_{part}_y * var.position_check_{part}_y + var.position_check_{part}_z * var.position_check_{part}_z) * sin(-{tilt} + atan2(var.position_check_{part}_y, var.position_check_{part}_z)) <= {base} - var.{source}_ty + {coef} * sin({tilt} + pi / 2) + var.snap, 1, var.contact)"
       },
       "plane": {
         "var.floor_{part}": "if(is_in_water || var.position_{part}_y + var.velocity_{part}_ty * var.deltatime <= {rest} + var.snap, 1, var.contact)"
@@ -107,8 +107,8 @@
             "var.rotation_{part}_y": "var.rotation_{part}_y + var.velocity_{part}_ry * var.deltatime"
           },
           "posed": {
-            "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({bone}.rx + var.velocity_angle_{part}) * var.deltatime",
-            "var.position_{part}_z": "var.position_{part}_z + var.velocity_{part}_tyz * cos({bone}.rx + var.velocity_angle_{part}) * var.deltatime"
+            "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({tilt} + var.velocity_angle_{part}) * var.deltatime",
+            "var.position_{part}_z": "var.position_{part}_z + var.velocity_{part}_tyz * cos({tilt} + var.velocity_angle_{part}) * var.deltatime"
           },
           "plane": {
             "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_ty * var.deltatime",

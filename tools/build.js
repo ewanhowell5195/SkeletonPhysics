@@ -195,7 +195,7 @@ function derive(geometry, config) {
   const parts = []
 
   // heights are Blockbench style, feet at 0, so declared translate y adds directly
-  ;(function walk(node, y, parent) {
+  ;(function walk(node, y, parent, chain) {
     const at = y + (node.translate ? node.translate[1] : 0)
     if (node.id && node.id.startsWith("physics_")) {
       const name = node.id.slice("physics_".length)
@@ -214,7 +214,10 @@ function derive(geometry, config) {
       const radius = spec.radius === undefined ? Math.min(...box.coordinates.slice(3)) / 2 : spec.radius
 
       const t = node.translate || [0, 0, 0]
+      // a nested pose bone tilts by every pose bone above it as well
+      const tilt = chain.map(id => id + ".rx")
       parts.push({
+        tilt: tilt.length > 1 ? "(" + tilt.join(" + ") + ")" : tilt[0],
         part: name,
         bone: pose,
         source,
@@ -232,8 +235,9 @@ function derive(geometry, config) {
         rest: at - radius
       })
     }
-    for (const s of node.submodels || []) walk(s, at, node.id)
-  })({ submodels: root.submodels }, 0, null)
+    const posed = node.id && !node.id.startsWith("physics_") && node.id.endsWith("2")
+    for (const s of node.submodels || []) walk(s, at, node.id, posed ? chain.concat([node.id]) : chain)
+  })({ submodels: root.submodels }, 0, null, [])
 
   const order = config.order || parts.map(p => p.part)
   return parts.sort((a, b) => order.indexOf(a.part) - order.indexOf(b.part))
