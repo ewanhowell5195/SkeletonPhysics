@@ -1,0 +1,8 @@
+{
+  "order": ["head", "body", "left_arm", "right_arm", "left_leg", "right_leg"],
+  "parts": {
+    "head": {
+      "copy": ["rx", "ry"]
+    }
+  }
+}

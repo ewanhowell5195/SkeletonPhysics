@@ -1,0 +1,60 @@
+{
+  "rootPart": "body1",
+  "collide": false,
+  "gravity": 0.5,
+  "shadow": 1,
+  "kick": [
+    1,
+    2
+  ],
+  "lift": [
+    0.5,
+    1
+  ],
+  "spinY": [
+    0.25,
+    0.5
+  ],
+  "order": [
+    "head1",
+    "head2",
+    "head3",
+    "body1",
+    "body2",
+    "body_beam1",
+    "body_beam2",
+    "body_beam3",
+    "body3"
+  ],
+  "parts": {
+    "head1": {
+      "copy": [
+        "rx",
+        "ry"
+      ]
+    },
+    "head2": {
+      "copy": [
+        "rx",
+        "ry"
+      ]
+    },
+    "head3": {
+      "copy": [
+        "rx",
+        "ry"
+      ]
+    },
+    "body2": {
+      "copy": [
+        "rx"
+      ]
+    },
+    "body3": {
+      "copy": {
+        "rx": "var.body3_rx - var.body2_rx"
+      }
+    }
+  },
+  "rig": false
+}

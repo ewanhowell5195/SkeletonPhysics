@@ -1,0 +1,5 @@
+{
+  "extends": "wither",
+  "defines": false,
+  "rig": false
+}

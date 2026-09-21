@@ -1,0 +1,66 @@
+{
+  "shadow": 0.75,
+  "order": [
+    "head",
+    "mouth",
+    "neck",
+    "mane",
+    "body",
+    "front_left_leg",
+    "front_right_leg",
+    "back_left_leg",
+    "back_right_leg"
+  ],
+  "cancel": "body",
+  "parts": {
+    "head": {
+      "source": "neck",
+      "copy": [
+        "rx",
+        "ry"
+      ],
+      "track": true
+    },
+    "mouth": {
+      "source": "neck",
+      "copy": []
+    },
+    "neck": {
+      "source": "neck",
+      "copy": []
+    },
+    "mane": {
+      "source": "neck",
+      "copy": []
+    },
+    "body": {
+      "copy": [
+        "rx"
+      ]
+    },
+    "front_left_leg": {
+      "copy": [
+        "rx"
+      ],
+      "track": true
+    },
+    "front_right_leg": {
+      "copy": [
+        "rx"
+      ],
+      "track": true
+    },
+    "back_left_leg": {
+      "copy": [
+        "rx"
+      ]
+    },
+    "back_right_leg": {
+      "copy": [
+        "rx"
+      ]
+    }
+  },
+  "anchor": "body",
+  "yawOffset": 1
+}

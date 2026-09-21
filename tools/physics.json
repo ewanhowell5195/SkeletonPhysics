@@ -1,0 +1,142 @@
+{
+  "sections": [
+    {
+      "per": "once",
+      "assign": {
+        "var.yaw": "if(death_time > 0, var.yaw, rot_y)",
+        "var.yaw_raw": "rot_y - var.yaw",
+        "var.yaw_delta": "var.yaw_raw - 2 * pi * round(var.yaw_raw / (2 * pi))"
+      }
+    },
+    {
+      "append": true,
+      "per": "latch",
+      "assign": {
+        "var.{name}": "if(death_time > 0, var.{name}, {source}.{axis})"
+      }
+    },
+    {
+      "per": "once",
+      "assign": {
+        "rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
+        "rotate.ry": "var.yaw_delta",
+        "render.shadow_opacity": "if(death_time == 0, 1, (20 - death_time) / 20)",
+        "render.shadow_size": "{shadow}"
+      }
+    },
+    {
+      "append": true,
+      "per": "once",
+      "needs": "cancel",
+      "assign": {
+        "cancel.rx": "-{cancel}.rx"
+      }
+    },
+    {
+      "per": "axis",
+      "assign": {
+        "{bone}.{axis}": "{expr}"
+      }
+    },
+    {
+      "append": true,
+      "per": "part",
+      "when": "track",
+      "assign": {
+        "{bone}.ty": "var.{source}_ty - var.{anchor}_ty",
+        "{bone}.tz": "var.{source}_tz - var.{anchor}_tz"
+      }
+    },
+    {
+      "per": "once",
+      "assign": {
+        "var.deltatime": "if(frame_counter == var.frame_counter_prev, 0, frame_time * 20)",
+        "var.a": "if(is_in_water, 0.1, {gravity})"
+      }
+    },
+    {
+      "append": true,
+      "needs": "collide",
+      "assign": {
+        "var.contact": "if(var.deltatime == 0, 1, 0.5)",
+        "var.snap": "if(death_time > 0 && !is_in_water, frac(pos_y) * {pixels}, 0)"
+      }
+    },
+    {
+      "per": "part",
+      "when": "posed",
+      "assign": {
+        "var.position_check_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({bone}.rx + var.velocity_angle_{part}) * var.deltatime",
+        "var.position_check_{part}_z": "{offsetz}var.position_{part}_z + var.velocity_{part}_tyz * cos({bone}.rx + var.velocity_angle_{part}) * var.deltatime"
+      },
+      "needs": "collide"
+    },
+    {
+      "per": "part",
+      "posed": {
+        "var.floor_{part}": "if(is_in_water || sqrt(var.position_check_{part}_y * var.position_check_{part}_y + var.position_check_{part}_z * var.position_check_{part}_z) * sin(-{bone}.rx + atan2(var.position_check_{part}_y, var.position_check_{part}_z)) <= {base} - var.{source}_ty + {coef} * sin({bone}.rx + pi / 2) + var.snap, 1, var.contact)"
+      },
+      "plane": {
+        "var.floor_{part}": "if(is_in_water || var.position_{part}_y + var.velocity_{part}_ty * var.deltatime <= {rest} + var.snap, 1, var.contact)"
+      },
+      "needs": "collide"
+    },
+    {
+      "per": "part",
+      "blocks": [
+        {
+          "assign": {
+            "var.velocity_{part}_tx": "if(death_time > 0, {floor}var.velocity_{part}_tx - var.first_frame * (random() - 0.5) * if(is_in_water, {kick_water}, {kick_air}), 0)",
+            "var.velocity_{part}_ty": "if(death_time > 0, {bounce}var.velocity_{part}_ty + var.a * var.deltatime - var.first_frame * random() * if(is_in_water, {lift_water}, {lift_air}), 0)",
+            "var.velocity_{part}_tz": "if(death_time > 0, {floor}var.velocity_{part}_tz - var.first_frame * (random() - 0.5) * if(is_in_water, {kick_water}, {kick_air}), 0)",
+            "var.velocity_{part}_rx": "if(death_time > 0, {floor}var.velocity_{part}_rx - var.first_frame * (random() - 0.5) * if(is_in_water, {spin_water}, {spin_air}), 0)",
+            "var.velocity_{part}_ry": "if(death_time > 0, {floor}var.velocity_{part}_ry - var.first_frame * (random() - 0.5) * if(is_in_water, {spinY_water}, {spinY_air}), 0)"
+          },
+          "posed": {
+            "var.velocity_{part}_tyz": "sqrt(var.velocity_{part}_ty * var.velocity_{part}_ty + var.velocity_{part}_tz * var.velocity_{part}_tz)",
+            "var.velocity_angle_{part}": "atan2(var.velocity_{part}_ty, var.velocity_{part}_tz)"
+          }
+        },
+        {
+          "assign": {
+            "var.position_{part}_x": "var.position_{part}_x + var.velocity_{part}_tx * var.deltatime",
+            "var.rotation_{part}_x": "var.rotation_{part}_x + var.velocity_{part}_rx * var.deltatime",
+            "var.rotation_{part}_y": "var.rotation_{part}_y + var.velocity_{part}_ry * var.deltatime"
+          },
+          "posed": {
+            "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_tyz * sin({bone}.rx + var.velocity_angle_{part}) * var.deltatime",
+            "var.position_{part}_z": "var.position_{part}_z + var.velocity_{part}_tyz * cos({bone}.rx + var.velocity_angle_{part}) * var.deltatime"
+          },
+          "plane": {
+            "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_ty * var.deltatime",
+            "var.position_{part}_z": "var.position_{part}_z + var.velocity_{part}_tz * var.deltatime"
+          },
+          "order": ["var.position_{part}_x", "var.position_{part}_y", "var.position_{part}_z", "var.rotation_{part}_x", "var.rotation_{part}_y"]
+        },
+        {
+          "assign": {
+            "physics_{part}.tx": "{offsetx}var.position_{part}_x",
+            "physics_{part}.ty": "{offsety}var.position_{part}_y",
+            "physics_{part}.tz": "{offsetz}var.position_{part}_z",
+            "physics_{part}.rx": "var.rotation_{part}_x",
+            "physics_{part}.ry": "var.rotation_{part}_y"
+          }
+        }
+      ]
+    },
+    {
+      "per": "once",
+      "assign": {
+        "var.first_frame": "if(death_time > 0, 0, 1)",
+        "var.frame_counter_prev": "frame_counter"
+      }
+    },
+    {
+      "per": "once",
+      "assign": {
+        "var.by_ewan_howell": 0
+      },
+      "always": true
+    }
+  ]
+}

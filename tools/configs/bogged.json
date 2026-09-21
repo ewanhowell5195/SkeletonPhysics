@@ -1,0 +1,6 @@
+{
+  "extends": "humanoid",
+  "extra": {
+    "mushrooms2.visible": "mushrooms.visible"
+  }
+}
