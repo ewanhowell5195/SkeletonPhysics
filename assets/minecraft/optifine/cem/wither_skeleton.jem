@@ -134,7 +134,8 @@
 				},
 				{
 					"var.deltatime": "if(frame_counter == var.frame_counter_prev, 0, frame_time * 20)",
-					"var.a": "if(is_in_water, 0.1, 1)"
+					"var.a": "if(is_in_water, 0.1, 1)",
+					"var.contact": "if(var.deltatime == 0, 1, 0.5)"
 				},
 				{
 					"var.position_check_head_y": "var.position_head_y + var.velocity_head_tyz * sin(head2.rx + var.velocity_angle_head) * var.deltatime",
@@ -149,12 +150,12 @@
 					"var.position_check_right_leg_z": "var.position_right_leg_z + var.velocity_right_leg_tyz * cos(right_leg2.rx + var.velocity_angle_right_leg) * var.deltatime"
 				},
 				{
-					"var.floor_head": "if(is_in_water || sqrt(var.position_check_head_y * var.position_check_head_y + var.position_check_head_z * var.position_check_head_z) * sin(-head2.rx + atan2(var.position_check_head_y, var.position_check_head_z)) <= 20 + 4 * sin(head2.rx + pi / 2), 1, 0.5)",
-					"var.floor_body": "if(is_in_water || var.position_body_y + var.velocity_body_ty * var.deltatime <= 14, 1, 0.5)",
-					"var.floor_left_arm": "if(is_in_water || sqrt(var.position_check_left_arm_y * var.position_check_left_arm_y + var.position_check_left_arm_z * var.position_check_left_arm_z) * sin(-left_arm2.rx + atan2(var.position_check_left_arm_y, var.position_check_left_arm_z)) <= 20 + -6 * sin(left_arm2.rx + pi / 2), 1, 0.5)",
-					"var.floor_right_arm": "if(is_in_water || sqrt(var.position_check_right_arm_y * var.position_check_right_arm_y + var.position_check_right_arm_z * var.position_check_right_arm_z) * sin(-right_arm2.rx + atan2(var.position_check_right_arm_y, var.position_check_right_arm_z)) <= 20 + -6 * sin(right_arm2.rx + pi / 2), 1, 0.5)",
-					"var.floor_left_leg": "if(is_in_water || sqrt(var.position_check_left_leg_y * var.position_check_left_leg_y + var.position_check_left_leg_z * var.position_check_left_leg_z) * sin(-left_leg2.rx + atan2(var.position_check_left_leg_y, var.position_check_left_leg_z)) <= 8 + -6 * sin(left_leg2.rx + pi / 2), 1, 0.5)",
-					"var.floor_right_leg": "if(is_in_water || sqrt(var.position_check_right_leg_y * var.position_check_right_leg_y + var.position_check_right_leg_z * var.position_check_right_leg_z) * sin(-right_leg2.rx + atan2(var.position_check_right_leg_y, var.position_check_right_leg_z)) <= 8 + -6 * sin(right_leg2.rx + pi / 2), 1, 0.5)"
+					"var.floor_head": "if(is_in_water || sqrt(var.position_check_head_y * var.position_check_head_y + var.position_check_head_z * var.position_check_head_z) * sin(-head2.rx + atan2(var.position_check_head_y, var.position_check_head_z)) <= 20 + 4 * sin(head2.rx + pi / 2), 1, var.contact)",
+					"var.floor_body": "if(is_in_water || var.position_body_y + var.velocity_body_ty * var.deltatime <= 14, 1, var.contact)",
+					"var.floor_left_arm": "if(is_in_water || sqrt(var.position_check_left_arm_y * var.position_check_left_arm_y + var.position_check_left_arm_z * var.position_check_left_arm_z) * sin(-left_arm2.rx + atan2(var.position_check_left_arm_y, var.position_check_left_arm_z)) <= 20 + -6 * sin(left_arm2.rx + pi / 2), 1, var.contact)",
+					"var.floor_right_arm": "if(is_in_water || sqrt(var.position_check_right_arm_y * var.position_check_right_arm_y + var.position_check_right_arm_z * var.position_check_right_arm_z) * sin(-right_arm2.rx + atan2(var.position_check_right_arm_y, var.position_check_right_arm_z)) <= 20 + -6 * sin(right_arm2.rx + pi / 2), 1, var.contact)",
+					"var.floor_left_leg": "if(is_in_water || sqrt(var.position_check_left_leg_y * var.position_check_left_leg_y + var.position_check_left_leg_z * var.position_check_left_leg_z) * sin(-left_leg2.rx + atan2(var.position_check_left_leg_y, var.position_check_left_leg_z)) <= 8 + -6 * sin(left_leg2.rx + pi / 2), 1, var.contact)",
+					"var.floor_right_leg": "if(is_in_water || sqrt(var.position_check_right_leg_y * var.position_check_right_leg_y + var.position_check_right_leg_z * var.position_check_right_leg_z) * sin(-right_leg2.rx + atan2(var.position_check_right_leg_y, var.position_check_right_leg_z)) <= 8 + -6 * sin(right_leg2.rx + pi / 2), 1, var.contact)"
 				},
 				{
 					"var.velocity_head_tx": "if(death_time > 0, var.floor_head * var.velocity_head_tx - var.first_frame * (random() - 0.5) * if(is_in_water, 2, 4), 0)",
