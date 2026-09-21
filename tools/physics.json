@@ -22,7 +22,9 @@
         "rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
         "render.shadow_opacity": "if(death_time == 0, 1, (20 - death_time) / 20)",
         "render.shadow_size": "{shadow}",
-        "rotate.ry": "-var.yaw_delta"
+        "rotate.ry": "-var.yaw_delta",
+        "var.death_y": "if(death_time > 0, var.death_y, pos_y)",
+        "translate.ty": "if(death_time > 0 && !is_in_water, (pos_y - var.death_y) * {pixels}, 0)"
       }
     },
     {
@@ -60,7 +62,7 @@
       "needs": "collide",
       "assign": {
         "var.contact": "if(var.deltatime == 0, 1, 0.5)",
-        "var.snap": "if(death_time > 0 && !is_in_water, frac(pos_y) * {pixels}, 0)"
+        "var.snap": "if(death_time > 0 && !is_in_water, frac(var.death_y) * {pixels}, 0)"
       }
     },
     {

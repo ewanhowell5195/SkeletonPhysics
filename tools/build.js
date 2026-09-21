@@ -145,12 +145,9 @@ function rig(template, config) {
     top = { id: "cancel", invertAxis: "xy", translate: pivot, submodels: [rotate] }
   }
 
-  // the translate group only exists to carry the floor snap
-  if (config.collide === false) rotate.submodels = inner
-  else {
-    const shift = config.cancel && config.yawOffset ? { translate: [0, 0, -config.yawOffset] } : {}
-    rotate.submodels = [Object.assign({ id: "translate", invertAxis: "xy" }, shift, { submodels: inner })]
-  }
+  // the translate group holds the rig at the height the mob died at
+  const shift = config.cancel && config.yawOffset ? { translate: [0, 0, -config.yawOffset] } : {}
+  rotate.submodels = [Object.assign({ id: "translate", invertAxis: "xy" }, shift, { submodels: inner })]
 
   const out = { credit: template.credit }
   if (template.textureSize) out.textureSize = template.textureSize
