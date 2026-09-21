@@ -174,9 +174,9 @@
 					"var.position_check_right_arm_y": "var.position_right_arm_y + var.velocity_right_arm_tyz * sin(right_arm2.rx + var.velocity_angle_right_arm) * var.deltatime",
 					"var.position_check_right_arm_z": "var.position_right_arm_z + var.velocity_right_arm_tyz * cos(right_arm2.rx + var.velocity_angle_right_arm) * var.deltatime",
 					"var.position_check_left_leg_y": "var.position_left_leg_y + var.velocity_left_leg_tyz * sin(left_leg2.rx + var.velocity_angle_left_leg) * var.deltatime",
-					"var.position_check_left_leg_z": "var.position_left_leg_z + var.velocity_left_leg_tyz * cos(left_leg2.rx + var.velocity_angle_left_leg) * var.deltatime",
+					"var.position_check_left_leg_z": "-0.1 + var.position_left_leg_z + var.velocity_left_leg_tyz * cos(left_leg2.rx + var.velocity_angle_left_leg) * var.deltatime",
 					"var.position_check_right_leg_y": "var.position_right_leg_y + var.velocity_right_leg_tyz * sin(right_leg2.rx + var.velocity_angle_right_leg) * var.deltatime",
-					"var.position_check_right_leg_z": "var.position_right_leg_z + var.velocity_right_leg_tyz * cos(right_leg2.rx + var.velocity_angle_right_leg) * var.deltatime"
+					"var.position_check_right_leg_z": "-0.1 + var.position_right_leg_z + var.velocity_right_leg_tyz * cos(right_leg2.rx + var.velocity_angle_right_leg) * var.deltatime"
 				},
 				{
 					"var.floor_head": "if(is_in_water || sqrt(var.position_check_head_y * var.position_check_head_y + var.position_check_head_z * var.position_check_head_z) * sin(-head2.rx + atan2(var.position_check_head_y, var.position_check_head_z)) <= 20 - var.head_ty + 4 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
@@ -295,7 +295,7 @@
 				{
 					"physics_left_leg.tx": "var.position_left_leg_x",
 					"physics_left_leg.ty": "6 + var.position_left_leg_y",
-					"physics_left_leg.tz": "var.position_left_leg_z",
+					"physics_left_leg.tz": "-0.1 + var.position_left_leg_z",
 					"physics_left_leg.rx": "var.rotation_left_leg_x",
 					"physics_left_leg.ry": "var.rotation_left_leg_y"
 				},
@@ -318,7 +318,7 @@
 				{
 					"physics_right_leg.tx": "var.position_right_leg_x",
 					"physics_right_leg.ty": "6 + var.position_right_leg_y",
-					"physics_right_leg.tz": "var.position_right_leg_z",
+					"physics_right_leg.tz": "-0.1 + var.position_right_leg_z",
 					"physics_right_leg.rx": "var.rotation_right_leg_x",
 					"physics_right_leg.ry": "var.rotation_right_leg_y"
 				},
