@@ -1,0 +1,5 @@
+{
+  "extends": "skeleton_horse",
+  "shadow": 0.5,
+  "yawOffset": 0
+}
