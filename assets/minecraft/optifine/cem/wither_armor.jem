@@ -123,7 +123,8 @@
 			],
 			"animations": [
 				{
-					"rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)"
+					"rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
+					"rotate.ry": "var.yaw_delta"
 				},
 				{
 					"head1_2.rx": "var.head1_rx",

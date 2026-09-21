@@ -123,6 +123,9 @@
 			],
 			"animations": [
 				{
+					"var.yaw": "if(death_time > 0, var.yaw, rot_y)",
+					"var.yaw_raw": "rot_y - var.yaw",
+					"var.yaw_delta": "var.yaw_raw - 2 * pi * round(var.yaw_raw / (2 * pi))",
 					"var.body2_rx": "if(death_time > 0, var.body2_rx, body2.rx)",
 					"var.body3_rx": "if(death_time > 0, var.body3_rx, body3.rx)",
 					"var.head1_rx": "if(death_time > 0, var.head1_rx, head1.rx)",
@@ -134,6 +137,7 @@
 				},
 				{
 					"rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
+					"rotate.ry": "var.yaw_delta",
 					"render.shadow_opacity": "if(death_time == 0, 1, (20 - death_time) / 20)",
 					"render.shadow_size": 1
 				},
