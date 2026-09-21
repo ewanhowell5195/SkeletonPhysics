@@ -78,7 +78,9 @@ function rig(template, config) {
     const lead = members[0]
     const name = lead.piece || lead.part
     const spec = (config.parts || {})[name] || (config.parts || {})[lead.part] || {}
-    const pivot = spec.pivot || ((config.parts || {})[lead.part] || {}).pivot || pivotOf(lead)
+    // pieces sharing a pose bone all measure from the part that bone follows
+    const from = spec.source && template.models.find(p => p.part === spec.source)
+    const pivot = spec.pivot || ((config.parts || {})[lead.part] || {}).pivot || pivotOf(from || lead)
     const centre = centreOf(lead.boxes[0])
 
     const physics = { id: "physics_" + name, invertAxis: "xy" }
