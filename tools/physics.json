@@ -1,14 +1,6 @@
 {
   "sections": [
     {
-      "per": "once",
-      "assign": {
-        "var.yaw": "if(death_time > 0, var.yaw, rot_y)",
-        "var.yaw_raw": "rot_y - var.yaw",
-        "var.yaw_delta": "var.yaw_raw - 2 * pi * round(var.yaw_raw / (2 * pi))"
-      }
-    },
-    {
       "append": true,
       "per": "latch",
       "assign": {
@@ -18,10 +10,19 @@
     {
       "per": "once",
       "assign": {
+        "var.yaw_step": "rot_y - var.yaw_prev",
+        "var.yaw_wrapped": "var.yaw_step - 2 * pi * round(var.yaw_step / (2 * pi))",
+        "var.yaw_delta": "if(death_time > 0, var.yaw_delta + var.yaw_wrapped, 0)",
+        "var.yaw_prev": "rot_y"
+      }
+    },
+    {
+      "per": "once",
+      "assign": {
         "rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
-        "rotate.ry": "var.yaw_delta",
         "render.shadow_opacity": "if(death_time == 0, 1, (20 - death_time) / 20)",
-        "render.shadow_size": "{shadow}"
+        "render.shadow_size": "{shadow}",
+        "rotate.ry": "-var.yaw_delta"
       }
     },
     {
@@ -111,7 +112,13 @@
             "var.position_{part}_y": "var.position_{part}_y + var.velocity_{part}_ty * var.deltatime",
             "var.position_{part}_z": "var.position_{part}_z + var.velocity_{part}_tz * var.deltatime"
           },
-          "order": ["var.position_{part}_x", "var.position_{part}_y", "var.position_{part}_z", "var.rotation_{part}_x", "var.rotation_{part}_y"]
+          "order": [
+            "var.position_{part}_x",
+            "var.position_{part}_y",
+            "var.position_{part}_z",
+            "var.rotation_{part}_x",
+            "var.rotation_{part}_y"
+          ]
         },
         {
           "assign": {

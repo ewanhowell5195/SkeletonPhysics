@@ -2,5 +2,10 @@
   "extends": "humanoid",
   "extra": {
     "mushrooms2.visible": "mushrooms.visible"
+  },
+  "parts": {
+    "mushrooms": {
+      "rideOn": "head"
+    }
   }
 }

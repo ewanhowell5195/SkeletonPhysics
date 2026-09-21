@@ -57,6 +57,15 @@ function rig(template, config) {
     }
   }
 
+  // a part with no cubes of its own rides on another piece, carrying its submodels
+  const riders = new Map()
+  for (const part of template.models) {
+    const on = ((config.parts || {})[part.part] || {}).rideOn
+    if (!on || part.boxes || !part.submodels) continue
+    if (!riders.has(on)) riders.set(on, [])
+    riders.get(on).push(part)
+  }
+
   const root = template.models.find(p => p.part === rootName)
   const anchorPart = config.anchor && template.models.find(p => p.part === config.anchor)
   const anchor = anchorPart ? pivotOf(anchorPart) : null
@@ -84,6 +93,18 @@ function rig(template, config) {
       translate: [0, 1, 2].map(i => pivot[i] - centre[i]),
       boxes: rebase(s.boxes, pivot)
     }))
+
+    for (const rider of riders.get(name) || []) {
+      const lead2 = rider.submodels[0]
+      const base = [0, 1, 2].map(i => lead2.translate[i] - centre[i])
+      const wrap = { id: rider.part + "2", invertAxis: "xy", translate: base, submodels: rider.submodels.map((sub, i) => {
+        const out = Object.assign({}, sub)
+        if (i === 0) delete out.translate
+        else out.translate = [0, 1, 2].map(j => sub.translate[j] - lead2.translate[j])
+        return out
+      }) }
+      physics.submodels = (physics.submodels || []).concat([wrap])
+    }
 
     if (lead.part === rootName) { bones.unshift(physics); continue }
 
