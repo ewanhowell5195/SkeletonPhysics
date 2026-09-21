@@ -77,6 +77,22 @@
 			],
 			"animations": [
 				{
+					"var.back_left_leg_rx": "if(death_time > 0, var.back_left_leg_rx, back_left_leg.rx)",
+					"var.back_left_leg_ty": "if(death_time > 0, var.back_left_leg_ty, back_left_leg.ty)",
+					"var.back_right_leg_rx": "if(death_time > 0, var.back_right_leg_rx, back_right_leg.rx)",
+					"var.back_right_leg_ty": "if(death_time > 0, var.back_right_leg_ty, back_right_leg.ty)",
+					"var.body_rx": "if(death_time > 0, var.body_rx, body.rx)",
+					"var.body_ty": "if(death_time > 0, var.body_ty, body.ty)",
+					"var.front_left_leg_rx": "if(death_time > 0, var.front_left_leg_rx, front_left_leg.rx)",
+					"var.front_left_leg_ty": "if(death_time > 0, var.front_left_leg_ty, front_left_leg.ty)",
+					"var.front_right_leg_rx": "if(death_time > 0, var.front_right_leg_rx, front_right_leg.rx)",
+					"var.front_right_leg_ty": "if(death_time > 0, var.front_right_leg_ty, front_right_leg.ty)",
+					"var.neck_rx": "if(death_time > 0, var.neck_rx, neck.rx)",
+					"var.neck_ry": "if(death_time > 0, var.neck_ry, neck.ry)",
+					"var.neck_ty": "if(death_time > 0, var.neck_ty, neck.ty)",
+					"var.neck_tz": "if(death_time > 0, var.neck_tz, neck.tz)"
+				},
+				{
 					"var.rotate": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)",
 					"rotate.rz": "var.rotate",
 					"rotate2.rz": "var.rotate",
@@ -88,19 +104,19 @@
 				},
 				{
 					"head_rear_cancel.rx": "-body.rx",
-					"head2.rx": "neck.rx",
-					"head2.ry": "neck.ry",
-					"head2.ty": "-19.89 + neck.ty",
-					"head2.tz": "-10.85 + neck.tz",
+					"head2.rx": "var.neck_rx",
+					"head2.ry": "var.neck_ry",
+					"head2.ty": "-19.89 + var.neck_ty",
+					"head2.tz": "-10.85 + var.neck_tz",
 					"head2.sx": "1.1",
 					"head2.sy": "1.1",
 					"head2.sz": "1.1",
 					"child_leg_rear_cancel.ty": "-front_left_leg.ty",
 					"child_leg_rear_cancel.tz": "1-front_left_leg.tz",
-					"child_front_left_leg2.rx": "front_left_leg.rx",
-					"child_front_right_leg2.rx": "front_right_leg.rx",
-					"child_back_left_leg2.rx": "back_left_leg.rx",
-					"child_back_right_leg2.rx": "back_right_leg.rx"
+					"child_front_left_leg2.rx": "var.front_left_leg_rx",
+					"child_front_right_leg2.rx": "var.front_right_leg_rx",
+					"child_back_left_leg2.rx": "var.back_left_leg_rx",
+					"child_back_right_leg2.rx": "var.back_right_leg_rx"
 				},
 				{
 					"var.deltatime": "if(frame_counter == var.frame_counter_prev, 0, frame_time * 20)",
@@ -117,8 +133,8 @@
 					"var.position_check_neck_z": "1.5 + var.position_neck_z + var.velocity_neck_tyz * cos(head2.rx + var.velocity_angle_neck) * var.deltatime",
 					"var.position_check_mane_y": "var.position_mane_y + var.velocity_mane_tyz * sin(head2.rx + var.velocity_angle_mane) * var.deltatime",
 					"var.position_check_mane_z": "6 + var.position_mane_z + var.velocity_mane_tyz * cos(head2.rx + var.velocity_angle_mane) * var.deltatime",
-					"var.position_check_body_y": "var.position_body_y + var.velocity_body_tyz * sin(body.rx + var.velocity_angle_body) * var.deltatime",
-					"var.position_check_body_z": "-6 + var.position_body_z + var.velocity_body_tyz * cos(body.rx + var.velocity_angle_body) * var.deltatime",
+					"var.position_check_body_y": "var.position_body_y + var.velocity_body_tyz * sin(var.body_rx + var.velocity_angle_body) * var.deltatime",
+					"var.position_check_body_z": "-6 + var.position_body_z + var.velocity_body_tyz * cos(var.body_rx + var.velocity_angle_body) * var.deltatime",
 					"var.position_check_child_front_left_leg_y": "var.position_child_front_left_leg_y + var.velocity_child_front_left_leg_tyz * sin(child_front_left_leg2.rx + var.velocity_angle_child_front_left_leg) * var.deltatime",
 					"var.position_check_child_front_left_leg_z": "var.position_child_front_left_leg_z + var.velocity_child_front_left_leg_tyz * cos(child_front_left_leg2.rx + var.velocity_angle_child_front_left_leg) * var.deltatime",
 					"var.position_check_child_front_right_leg_y": "var.position_child_front_right_leg_y + var.velocity_child_front_right_leg_tyz * sin(child_front_left_leg2.rx + var.velocity_angle_child_front_right_leg) * var.deltatime",
@@ -129,15 +145,15 @@
 					"var.position_check_child_back_right_leg_z": "-1 + var.position_child_back_right_leg_z + var.velocity_child_back_right_leg_tyz * cos(child_back_right_leg2.rx + var.velocity_angle_child_back_right_leg) * var.deltatime"
 				},
 				{
-					"var.floor_head": "if(is_in_water || sqrt(var.position_check_head_y * var.position_check_head_y + var.position_check_head_z * var.position_check_head_z) * sin(-head2.rx + atan2(var.position_check_head_y, var.position_check_head_z)) <= 20 - neck.ty + 8.5 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_mouth": "if(is_in_water || sqrt(var.position_check_mouth_y * var.position_check_mouth_y + var.position_check_mouth_z * var.position_check_mouth_z) * sin(-head2.rx + atan2(var.position_check_mouth_y, var.position_check_mouth_z)) <= 20 - neck.ty + 8.5 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_neck": "if(is_in_water || sqrt(var.position_check_neck_y * var.position_check_neck_y + var.position_check_neck_z * var.position_check_neck_z) * sin(-head2.rx + atan2(var.position_check_neck_y, var.position_check_neck_z)) <= 20 - neck.ty + var.snap, 1, var.contact)",
-					"var.floor_mane": "if(is_in_water || sqrt(var.position_check_mane_y * var.position_check_mane_y + var.position_check_mane_z * var.position_check_mane_z) * sin(-head2.rx + atan2(var.position_check_mane_y, var.position_check_mane_z)) <= 20 - neck.ty + 3 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_body": "if(is_in_water || sqrt(var.position_check_body_y * var.position_check_body_y + var.position_check_body_z * var.position_check_body_z) * sin(-body.rx + atan2(var.position_check_body_y, var.position_check_body_z)) <= 20 - body.ty + 3 * sin(body.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_child_front_left_leg": "if(is_in_water || sqrt(var.position_check_child_front_left_leg_y * var.position_check_child_front_left_leg_y + var.position_check_child_front_left_leg_z * var.position_check_child_front_left_leg_z) * sin(-child_front_left_leg2.rx + atan2(var.position_check_child_front_left_leg_y, var.position_check_child_front_left_leg_z)) <= 23 - front_left_leg.ty + -4.5 * sin(child_front_left_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_child_front_right_leg": "if(is_in_water || sqrt(var.position_check_child_front_right_leg_y * var.position_check_child_front_right_leg_y + var.position_check_child_front_right_leg_z * var.position_check_child_front_right_leg_z) * sin(-child_front_right_leg2.rx + atan2(var.position_check_child_front_right_leg_y, var.position_check_child_front_right_leg_z)) <= 23 - front_right_leg.ty + -4.5 * sin(child_front_right_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_child_back_left_leg": "if(is_in_water || sqrt(var.position_check_child_back_left_leg_y * var.position_check_child_back_left_leg_y + var.position_check_child_back_left_leg_z * var.position_check_child_back_left_leg_z) * sin(-child_back_left_leg2.rx + atan2(var.position_check_child_back_left_leg_y, var.position_check_child_back_left_leg_z)) <= 23 - back_left_leg.ty + -4.5 * sin(child_back_left_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
-					"var.floor_child_back_right_leg": "if(is_in_water || sqrt(var.position_check_child_back_right_leg_y * var.position_check_child_back_right_leg_y + var.position_check_child_back_right_leg_z * var.position_check_child_back_right_leg_z) * sin(-child_back_right_leg2.rx + atan2(var.position_check_child_back_right_leg_y, var.position_check_child_back_right_leg_z)) <= 23 - back_right_leg.ty + -4.5 * sin(child_back_right_leg2.rx + pi / 2) + var.snap, 1, var.contact)"
+					"var.floor_head": "if(is_in_water || sqrt(var.position_check_head_y * var.position_check_head_y + var.position_check_head_z * var.position_check_head_z) * sin(-head2.rx + atan2(var.position_check_head_y, var.position_check_head_z)) <= 20 - var.neck_ty + 8.5 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_mouth": "if(is_in_water || sqrt(var.position_check_mouth_y * var.position_check_mouth_y + var.position_check_mouth_z * var.position_check_mouth_z) * sin(-head2.rx + atan2(var.position_check_mouth_y, var.position_check_mouth_z)) <= 20 - var.neck_ty + 8.5 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_neck": "if(is_in_water || sqrt(var.position_check_neck_y * var.position_check_neck_y + var.position_check_neck_z * var.position_check_neck_z) * sin(-head2.rx + atan2(var.position_check_neck_y, var.position_check_neck_z)) <= 20 - var.neck_ty + var.snap, 1, var.contact)",
+					"var.floor_mane": "if(is_in_water || sqrt(var.position_check_mane_y * var.position_check_mane_y + var.position_check_mane_z * var.position_check_mane_z) * sin(-head2.rx + atan2(var.position_check_mane_y, var.position_check_mane_z)) <= 20 - var.neck_ty + 3 * sin(head2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_body": "if(is_in_water || sqrt(var.position_check_body_y * var.position_check_body_y + var.position_check_body_z * var.position_check_body_z) * sin(-var.body_rx + atan2(var.position_check_body_y, var.position_check_body_z)) <= 20 - var.body_ty + 3 * sin(var.body_rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_child_front_left_leg": "if(is_in_water || sqrt(var.position_check_child_front_left_leg_y * var.position_check_child_front_left_leg_y + var.position_check_child_front_left_leg_z * var.position_check_child_front_left_leg_z) * sin(-child_front_left_leg2.rx + atan2(var.position_check_child_front_left_leg_y, var.position_check_child_front_left_leg_z)) <= 23 - var.front_left_leg_ty + -4.5 * sin(child_front_left_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_child_front_right_leg": "if(is_in_water || sqrt(var.position_check_child_front_right_leg_y * var.position_check_child_front_right_leg_y + var.position_check_child_front_right_leg_z * var.position_check_child_front_right_leg_z) * sin(-child_front_right_leg2.rx + atan2(var.position_check_child_front_right_leg_y, var.position_check_child_front_right_leg_z)) <= 23 - var.front_right_leg_ty + -4.5 * sin(child_front_right_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_child_back_left_leg": "if(is_in_water || sqrt(var.position_check_child_back_left_leg_y * var.position_check_child_back_left_leg_y + var.position_check_child_back_left_leg_z * var.position_check_child_back_left_leg_z) * sin(-child_back_left_leg2.rx + atan2(var.position_check_child_back_left_leg_y, var.position_check_child_back_left_leg_z)) <= 23 - var.back_left_leg_ty + -4.5 * sin(child_back_left_leg2.rx + pi / 2) + var.snap, 1, var.contact)",
+					"var.floor_child_back_right_leg": "if(is_in_water || sqrt(var.position_check_child_back_right_leg_y * var.position_check_child_back_right_leg_y + var.position_check_child_back_right_leg_z * var.position_check_child_back_right_leg_z) * sin(-child_back_right_leg2.rx + atan2(var.position_check_child_back_right_leg_y, var.position_check_child_back_right_leg_z)) <= 23 - var.back_right_leg_ty + -4.5 * sin(child_back_right_leg2.rx + pi / 2) + var.snap, 1, var.contact)"
 				},
 				{
 					"var.velocity_head_tx": "if(death_time > 0, var.floor_head * var.velocity_head_tx - var.first_frame * (random() - 0.5) * if(is_in_water, 2, 4), 0)",
@@ -242,8 +258,8 @@
 				},
 				{
 					"var.position_body_x": "var.position_body_x + var.velocity_body_tx * var.deltatime",
-					"var.position_body_y": "var.position_body_y + var.velocity_body_tyz * sin(body.rx + var.velocity_angle_body) * var.deltatime",
-					"var.position_body_z": "var.position_body_z + var.velocity_body_tyz * cos(body.rx + var.velocity_angle_body) * var.deltatime",
+					"var.position_body_y": "var.position_body_y + var.velocity_body_tyz * sin(var.body_rx + var.velocity_angle_body) * var.deltatime",
+					"var.position_body_z": "var.position_body_z + var.velocity_body_tyz * cos(var.body_rx + var.velocity_angle_body) * var.deltatime",
 					"var.rotation_body_x": "var.rotation_body_x + var.velocity_body_rx * var.deltatime",
 					"var.rotation_body_y": "var.rotation_body_y + var.velocity_body_ry * var.deltatime"
 				},

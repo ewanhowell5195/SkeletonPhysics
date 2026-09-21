@@ -126,14 +126,14 @@
 					"rotate.rz": "if(death_time > 0, -torad(min(sqrt((death_time - 1) / 20 * 1.6), 1) * 90), 0)"
 				},
 				{
-					"head1_2.rx": "head1.rx",
-					"head1_2.ry": "head1.ry",
-					"head2_2.rx": "head2.rx",
-					"head2_2.ry": "head2.ry",
-					"head3_2.rx": "head3.rx",
-					"head3_2.ry": "head3.ry",
-					"body2_2.rx": "body2.rx",
-					"body3_2.rx": "body3.rx / 2 + torad(12.15)"
+					"head1_2.rx": "var.head1_rx",
+					"head1_2.ry": "var.head1_ry",
+					"head2_2.rx": "var.head2_rx",
+					"head2_2.ry": "var.head2_ry",
+					"head3_2.rx": "var.head3_rx",
+					"head3_2.ry": "var.head3_ry",
+					"body2_2.rx": "var.body2_rx",
+					"body3_2.rx": "var.body3_rx / 2 + torad(12.15)"
 				},
 				{
 					"physics_head1.tx": "var.position_head1_x",
