@@ -48,13 +48,42 @@
     "body2": {
       "copy": [
         "rx"
+      ],
+      "split": [
+        "body2",
+        "body_beam1",
+        "body_beam2",
+        "body_beam3"
+      ],
+      "pivot": [
+        0,
+        17.1,
+        -0.5
       ]
     },
     "body3": {
       "copy": {
         "rx": "var.body3_rx - var.body2_rx"
-      }
+      },
+      "pivot": [
+        0,
+        7.1,
+        -0.5
+      ],
+      "under": "body2"
+    },
+    "body_beam1": {
+      "source": "body2",
+      "copy": []
+    },
+    "body_beam2": {
+      "source": "body2",
+      "copy": []
+    },
+    "body_beam3": {
+      "source": "body2",
+      "copy": []
     }
   },
-  "rig": false
+  "poseSuffix": "_2"
 }

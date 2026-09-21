@@ -45,10 +45,16 @@ function rig(template, config) {
   const pieces = new Map()
   for (const part of template.models) {
     if (!part.boxes) continue
-    if (wanted && !wanted.has(((config.parts || {})[part.part] || {}).piece || part.part)) continue
-    const key = centreOf(part.boxes[0]).join(",")
-    if (!pieces.has(key)) pieces.set(key, [])
-    pieces.get(key).push(part)
+    // a part whose cubes are separate pieces names each of them in cube order
+    const split = ((config.parts || {})[part.part] || {}).split
+    const groups = split ? part.boxes.map((b, i) => ({ name: split[i], boxes: [b] })) : [{ name: part.part, boxes: part.boxes }]
+    for (const g of groups) {
+      if (!g.name) continue
+      if (wanted && !wanted.has(g.name)) continue
+      const key = split ? g.name : centreOf(g.boxes[0]).join(",")
+      if (!pieces.has(key)) pieces.set(key, [])
+      pieces.get(key).push(Object.assign({}, part, { boxes: g.boxes, piece: g.name }))
+    }
   }
 
   const root = template.models.find(p => p.part === rootName)
@@ -58,16 +64,18 @@ function rig(template, config) {
   const bones = []
   const poses = new Map()
   const grouped = new Map()
+  const hostPivot = new Map()
   for (const members of pieces.values()) {
     const lead = members[0]
-    const name = ((config.parts || {})[lead.part] || {}).piece || lead.part
-    const spec = (config.parts || {})[((config.parts || {})[lead.part] || {}).piece || lead.part] || {}
-    const pivot = spec.pivot || pivotOf(lead)
+    const name = lead.piece || lead.part
+    const spec = (config.parts || {})[name] || (config.parts || {})[lead.part] || {}
+    const pivot = spec.pivot || ((config.parts || {})[lead.part] || {}).pivot || pivotOf(lead)
     const centre = centreOf(lead.boxes[0])
 
     const physics = { id: "physics_" + name, invertAxis: "xy" }
     if (lead.mirrorTexture) physics.mirrorTexture = lead.mirrorTexture
-    physics.translate = lead.part === rootName && !config.cancel ? centre : [0, 1, 2].map(i => centre[i] - pivot[i])
+    const at = lead.part === rootName && !config.cancel ? centre : [0, 1, 2].map(i => centre[i] - pivot[i])
+    if (at.some(v => v)) physics.translate = at
     physics.boxes = members.flatMap(m => rebase(m.boxes, centre))
 
     // a part's own submodels, the overlay layers, ride along on the piece
@@ -82,7 +90,7 @@ function rig(template, config) {
     // pieces sharing a pose bone hang off the one named by their source
     // pieces group onto one pose bone by source, named after the first of them
     const group = ((config.parts || {})[name] || {}).source || name
-    const poseName = (grouped.get(group) || name) + "2"
+    const poseName = (grouped.get(group) || name) + (config.poseSuffix || "2")
     if (!grouped.has(group)) grouped.set(group, name)
     const existing = poses.get(poseName)
     if (existing) { existing.submodels.push(physics); continue }
@@ -92,7 +100,12 @@ function rig(template, config) {
     pose.translate = anchor ? [0, 1, 2].map(i => pivot[i] - anchor[i]) : pivot
     pose.submodels = [physics]
     poses.set(poseName, pose)
-    bones.push(pose)
+    const host = spec.under && poses.get(spec.under + (config.poseSuffix || "2"))
+    if (host) {
+      pose.translate = [0, 1, 2].map(i => pivot[i] - hostPivot.get(spec.under)[i])
+      host.submodels.push(pose)
+    } else bones.push(pose)
+    hostPivot.set(name, pivot)
   }
 
   const pivot = pivotOf(root)
@@ -111,8 +124,12 @@ function rig(template, config) {
     top = { id: "cancel", invertAxis: "xy", translate: pivot, submodels: [rotate] }
   }
 
-  const shift = config.cancel && config.yawOffset ? { translate: [0, 0, -config.yawOffset] } : {}
-  rotate.submodels = [Object.assign({ id: "translate", invertAxis: "xy" }, shift, { submodels: inner })]
+  // the translate group only exists to carry the floor snap
+  if (config.collide === false) rotate.submodels = inner
+  else {
+    const shift = config.cancel && config.yawOffset ? { translate: [0, 0, -config.yawOffset] } : {}
+    rotate.submodels = [Object.assign({ id: "translate", invertAxis: "xy" }, shift, { submodels: inner })]
+  }
 
   const out = { credit: template.credit }
   if (template.textureSize) out.textureSize = template.textureSize
